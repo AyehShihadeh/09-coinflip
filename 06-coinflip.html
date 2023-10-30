@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+  <head></head>
+  <body>
+
+    <h2>COIN FLIP GAME</h2>
+    <div class="flip-coin-head" style="display:flex; align-items:center;">
+      <button onclick="
+      flipCoin();
+      ">flip</button>
+      <p> . . . </p>
+      <p class="js-result">?</p>
+
+    </div>
+
+
+    <p>
+      Guess:
+      <button onclick="
+      compare('heads', result);
+      result=''; //clear result
+      guess='';
+    ">heads</button>
+
+    <button onclick="
+      compare('tails', result);
+      result=''; //clear result
+    ">tails</button>
+    </p>
+
+
+
+    <br>
+    <br>
+
+    <p class="js-message2"></p>
+    <p class="js-message1"></p>
+    <p class="js-message3"></p>
+
+    <div class="score" style="display: flex; align-items: center;">
+      <p class="js-wins">Wins:</p>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <p class="js-losses">Losses:</p>
+    </div>
+
+
+    <button onclick="
+      score.losses=0;
+      score.wins=0;
+      localStorage.removeItem('scoreString'); //removes score from local storage
+      updateScore();
+      alert('score has been reset');
+    ">reset</button>
+
+    <script>
+      //retreive string and turn back into an object
+      let score = JSON.parse(localStorage.getItem('scoreString'));
+
+      let result = ''; //random head or tail
+      let message = ''; //correct or incorrect
+      let guess = ''; //user choice
+
+      //give score default scores if null
+      if(score === null){ //!score is equvilent
+        score ={
+          wins:0,
+          losses:0,
+        };
+      }
+
+  
+      //print message
+      function popup(){
+
+        document.querySelector('.js-result').innerHTML = `${result}`;
+        console.log(result);
+
+        document.querySelector('.js-message2').innerHTML = `${message}`;
+
+        document.querySelector('.js-message1').innerHTML = `Guessed: ${guess} &nbsp;&nbsp;&nbsp;&nbsp; Truth: ${result}`;
+
+      }
+
+      //print score only
+      function updateScore(){
+        document.querySelector('.js-wins').innerHTML = `Wins: ${score.wins}`;
+
+        document.querySelector('.js-losses').innerHTML = `Losses: ${score.losses}`;
+      }
+
+      //flips coin and saves it in result
+      function flipCoin(){
+        const randNum = Math.random();
+
+        if(randNum < 0.5){
+        result='heads';
+        }else{
+        result='tails';
+        }
+      }
+
+      //compares guess with result
+      function compare(g, result){
+        guess=g;
+
+        if(result===''|| result===null){
+          alert('pls flip coin');
+          return;
+        }else if(g === result){
+          message='CORRECT';
+          score.wins++;
+        }else{
+          message='INCORRECT';
+          score.losses++;
+        }
+        popup();
+
+        //turn score object into string and set in storage
+        localStorage.setItem('scoreString', JSON.stringify(score));
+
+        updateScore();
+      }
+
+      //for score to stay on page refresh
+       updateScore();
+
+    </script>
+  </body>
+</html>
